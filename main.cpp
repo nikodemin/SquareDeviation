@@ -4,12 +4,12 @@
 #include	<math.h>
 using namespace std;
 
-const int range = 10;
-const int arrSize = 100;
+const int range = 15;
+const int arrSize = 150;
 int avrg = 0;
 
 int get_dev1(int* arr)		//in forehead solution
-{
+{	
 	int dev = 0;
 	for (int i = 0; i < arrSize; ++i)
 	{
@@ -37,59 +37,64 @@ int get_dev2(int* arr)
 	return dev;
 }
 
-int histogramm[2*range+1] = {0};
+int histogramm[range] = {0};
 int get_dev3(int* arr)
 {
 	int dev = 0;
 	for (int i = 0; i < arrSize; ++i)		// fill histogramm
 	{
-		histogramm[arr[i]+range] += 1;
+		histogramm[arr[i]-1] += 1;
 	}
-	/*
-	for (int i = 0; i < 2*range+1; ++i)
+	for (int i = 0; i < range; ++i)
 	{
-		avrg += histogramm[i]*i;
-	}
-	//count avrg
-	 */
-	for (int i = -range; i < range+1; ++i)
-	{
-		dev += pow(i-avrg, 2)*histogramm[i+range];
+		dev += pow(i-avrg, 2)*histogramm[i];
 	}
 	dev /= arrSize-1;
 	dev = sqrt(dev);
 	return dev;
 }
 
-void printHistogramm(int* h)
+void countAverage()
 {
-	for (int j = 0; j < 2*range; ++j)
+	avrg = 0;
+	for (int i = 0; i < range; ++i)
 	{
-		
+		avrg += histogramm[i]*(i+1);
 	}
-		for (int i = 0; i < 2*range; ++i)
-		{
-			cout << histogramm[2*range+1];
-		}
-	
+	avrg /= arrSize;
+}
+
+void printHistogramm()
+{
+	for (int i = 0; i < range; ++i)
+	{
+		cout << histogramm[i]<<' ';
+	}	
+	cout<<endl;
 }
 
 int main()
 {
 	srand(time(NULL));
 	int* Arr = new int(arrSize);
+	avrg = 0;
 	
 	for (int i = 0; i < arrSize; ++i)
 	{
-		Arr[i] = rand() % range;
+		Arr[i] = 1+(rand() % range);	//begin from 1, to prevent mistake in histogramm count
 		avrg += Arr[i];
+		cout << Arr[i] << ' ';
 	}	
 	avrg /= arrSize;	//prepairing complete
 	
-	cout << "first deviation = "<<get_dev1(Arr)<<endl;
-	cout << "second deviation = "<<get_dev2(Arr)<<endl;
-	cout << "third deviation = "<<get_dev3(Arr)<<endl;
-	
+	cout <<endl<<"average = " << avrg << endl;
+	cout << "first deviation = "<<get_dev1(Arr) << endl;
+	cout << "second deviation = "<<get_dev2(Arr) << endl;
+	cout << "third deviation = "<<get_dev3(Arr) << endl;
+	cout << "histogramm:" << endl;
+	printHistogramm();
+	countAverage();
+	cout <<"average = " << avrg << endl;
 	return 0;
 }
 
